@@ -1,0 +1,60 @@
+# -*- mode: ruby -*-
+smtp_host = ENV.fetch("SMTP_HOST") # MUST
+domain = ENV.fetch("DOMAIN", smtp_host)
+
+Config = {
+  :port => 10025,
+  :user => "list",
+  :group => "list",
+  :bind_address => "*",
+
+  :smtp_host => smtp_host,
+  :smtp_port => ENV.fetch("SMTP_PORT", 25).to_i,
+  :domain => domain,
+  :postmaster => ENV.fetch("POSTMASTER", "postmaster@#{domain}"),
+  :info_url => ENV.fetch("INFO_URL", ""),
+
+  :data_dir => "/var/lib/quickml",
+  :pid_file => "/var/run/quickml/quickml.pid",
+  :log_file => "/dev/stdout",
+
+  :verbose_mode => true,
+  :max_members => ENV.fetch("MAX_MEMBERS", 100).to_i,
+  :max_mail_length => ENV.fetch("MAX_MAIL_LENGTH", 100 * 1024).to_i,
+  :ml_life_time => ENV.fetch("ML_LIFE_TIME", 86400 * 31).to_i,
+  :ml_alert_time => ENV.fetch("ML_ALERT_TIME", 86400 * 30).to_i,
+  :auto_unsubscribe_count => ENV.fetch("AUTO_UNSUBSCRIBE_COUNT", 5).to_i,
+
+  :sweep_interval => 3600,
+  :max_threads => 10,
+  :timeout => 120,
+  :use_qmail_verp => false,
+
+  :confirm_ml_creation => false, # for confirming ML creation.
+
+  :message_catalog => nil,  # for English messages
+  # :message_catalog => '/usr/share/quickml/messages.ja', # for Japanese messages
+  # :authorized_creators_list => '/etc/quickml/authorized_creators',
+  # :distribute_address => "dist@#{mailname}",
+  # :report_address => "notify@#{mailname}"
+}
+
+if ENV["AUTHORIZED_CREATORS"]
+  creators = ENV["AUTHORIZED_CREATORS"].split(":").map { |l| l + "\n" }
+  require "pathname"
+  path = Pathname("/var/run/quickml/authorized_creators_list")
+  path.write(creators)
+  Config[:authorized_creators_list] = path.to_s
+end
+%i[
+  message_catalog
+  authorized_creators_list
+  distribute_address
+  report_address
+].each do |key|
+  if ENV[key.to_s]
+    Config[key] = ENV[key.to_s]
+  end
+end
+
+Config # evaluation
