@@ -43,7 +43,7 @@ if ENV["AUTHORIZED_CREATORS"]
   creators = ENV["AUTHORIZED_CREATORS"].split(":").map { |l| l + "\n" }
   require "pathname"
   path = Pathname("/var/run/quickml/authorized_creators_list")
-  path.write(creators)
+  path.write(creators.join)
   Config[:authorized_creators_list] = path.to_s
 end
 %i[
