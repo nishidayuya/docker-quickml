@@ -1,0 +1,27 @@
+version: "2.0"
+
+services:
+  quickml:
+    image: nishidayuya/quickml:stretch
+    restart: always
+    ports:
+      - "10025:10025"
+    volumes:
+      - $PWD/mls:/var/lib/quickml
+    environment:
+      # MUST EDIT
+      SMTP_HOST: smtp-server-host
+
+      # SMTP_PORT: 25
+      # DOMAIN: smtp-server-host
+      # POSTMASTER: postmaster@smtp-server-host
+      # INFO_URL: ""
+      # MAX_MEMBERS: 100
+      # MAX_MAIL_LENGTH: 102400
+      # ML_LIFE_TIME: 2678400
+      # ML_ALERT_TIME: 2592000
+      # AUTO_UNSUBSCRIBE_COUNT: 5
+      # AUTHORIZED_CREATORS: administrators-of-your-quickml@example.org:foo@example.org
+
+      # If you want to use Japanese message catalog, uncomment following.
+      # MESSAGE_CATALOG: /usr/share/quickml/messages.ja
